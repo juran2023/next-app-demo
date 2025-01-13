@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types'
 
-export function Post(_id, title, author) {
+export function Post({_id, title, author}) {
+  console.log(`_id: ${_id}`)
+  console.log(`title: ${title}`)
+  console.log(`author: ${author}`)
   return (
     <article>
       <h3>{title}</h3>
