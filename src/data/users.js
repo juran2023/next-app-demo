@@ -32,3 +32,16 @@ export async function getUserInfoById(userId) {
   }
   return { username: user.username }
 }
+
+export function getUserIdByToken(token) {
+  if (!token) return null
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+  return decodedToken.sub
+}
+
+export async function getUserInfoByToken(token) {
+  const userId = getUserIdByToken(token)
+  if (!userId) return null
+  const user = await getUserInfoById(userId)
+  return user
+}
