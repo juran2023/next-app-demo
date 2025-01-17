@@ -1,5 +1,36 @@
-import { Login } from "@/components/Login"
+import { Login } from '@/components/Login'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { initDatabase } from '@/db/init'
+import { loginUser } from '@/data/users'
+
+async function loginAction(prevState, formData) {
+  'use server'
+  let token
+  try {
+    await initDatabase()
+    token = await loginUser({
+      username: formData.get('username'),
+      password: formData.get('password'),
+    })
+  } catch (err) {
+    return {
+      error: err.message,
+    }
+  }
+
+  cookies().set({
+    name: 'AUTH_TOKEN',
+    value: token,
+    path: '/',
+    maxAge: 60 * 60 * 24,
+    secure: true,
+    httpOnly: true,
+  })
+
+  redirect('/')
+}
 
 export default function LoginPage() {
-  return <Login/>
+  return <Login loginAction={loginAction} />
 }
